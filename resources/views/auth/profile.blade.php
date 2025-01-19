@@ -17,11 +17,9 @@
                 </ul>
             </div>
         @endif
-        @if ($user->image)
         <div class="text-center">
             <img src="{{ asset(Auth::user()->image) }}" alt="Profile Image" class="img-fluid rounded-circle" style="width: 200px; height: 200px; object-fit: cover;">
         </div>
-        @endif
         <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="mb-3">
@@ -35,8 +33,13 @@
             <div class="mb-3">
                 <label for="image" class="form-label">Foto Profil</label>
                 <input type="file" class="form-control" id="image" name="image">
-
             </div>
+            @if (Auth::user()->image && Auth::user()->image !== 'profile_images/defaultpp.png')
+                <form action="{{ route('profile.deleteImage') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="btn btn-danger w-100 mb-2">Hapus Foto Profil</button>
+                </form>
+            @endif
             <button type="submit" class="btn btn-primary w-100">Perbarui Profil</button>
         </form>
 

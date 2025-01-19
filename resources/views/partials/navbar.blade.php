@@ -33,7 +33,8 @@
             <a href="{{ route('login') }}" class="btn btn-outline-primary mx-1">Masuk</a>
             <a href="{{ route('register') }}" class="btn btn-primary mx-1">Daftar</a>
         @else
-            <a href="{{ route('profile') }}" class="text-decoration-none text-dark fw-semibold mx-1"><img src="{{ asset(Auth::user()->image) }}" alt="Profile Image" class="profile-imageimg-fluid rounded-circle border border-white me-1" style="width: 40px; height: 40px; object-fit: cover; box-shadow: 0 0 0 3px #1e90ff;">
+            <a href="{{ route('profile') }}" class="text-decoration-none text-dark fw-semibold mx-1">
+              <img src="{{ asset(Auth::user()->image) }}" alt="Profile Image" class="profile-image img-fluid rounded-circle border border-white me-1" style="width: 40px; height: 40px; object-fit: cover; box-shadow: 0 0 0 3px #1e90ff;">
             </a>
         @endguest
     </div>

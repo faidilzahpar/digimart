@@ -107,6 +107,22 @@ class AuthController extends Controller
 
         return redirect()->route('profile')->with('success', 'Profil berhasil diperbarui!');
     }
+    
+    public function deleteProfileImage()
+    {
+        $user = User::find(Auth::id()); // Pastikan user dimuat dari model
+
+        if ($user && $user->image && $user->image !== 'profile_images/defaultpp.png') {
+            $imagePath = public_path($user->image);
+            if (file_exists($imagePath)) {
+                unlink($imagePath); // Hapus file dari folder
+            }
+            $user->image = null; // Set kolom image ke null
+            $user->save();
+        }
+
+        return redirect()->route('profile')->with('success', 'Foto profil berhasil dihapus!');
+    }
 
 
 

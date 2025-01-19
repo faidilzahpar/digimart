@@ -25,6 +25,11 @@ class User extends Authenticatable
         'image',
     ];
 
+    public function getImageAttribute($value)
+    {
+        return $value ? $value : 'profile_images/defaultpp.png';
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *

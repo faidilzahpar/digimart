@@ -38,7 +38,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [AuthController::class, 'showProfile'])->name('profile');
     Route::post('/profile/update', [AuthController::class, 'updateProfile'])->name('profile.update');
     Route::post('/profile/change-password', [AuthController::class, 'changePassword'])->name('profile.changePassword');
+    Route::post('/profile/delete-image', [AuthController::class, 'deleteProfileImage'])->name('profile.deleteImage');
 });
+
+
 
 Route::prefix('admin')->middleware('auth')->group(function () {
     Route::get('/', [AdminProductController::class, 'index'])->name('admin.index');
