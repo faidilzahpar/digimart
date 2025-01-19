@@ -29,6 +29,10 @@
                 <input type="text" class="form-control" id="username" name="username" value="{{ old('username', $user->username) }}" required>
             </div>
             <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" name="email" value="{{ $user->email }}" readonly>
+            </div>
+            <div class="mb-3">
                 <label for="image" class="form-label">Foto Profil</label>
                 <input type="file" class="form-control" id="image" name="image">
 
@@ -61,6 +65,9 @@
             @csrf
             <button type="submit" class="btn btn-danger w-100">Keluar</button>
         </form>
+        <div class="text-center mt-3">
+            <a href="{{ route('password.request') }}" class="btn btn-link text-decoration-none">Lupa Password?</a>
+        </div>
     </div>
 </div>
 @endsection

@@ -7,7 +7,7 @@
     <h1 class="display-4">Selamat Datang di</h1>
     <img src="https://github.com/faidilzahpar/CRUD-laravel/blob/main/assets/LogotypeDigiMart200px.png?raw=true" alt="" style="max-width: 80vw; width: 588px;">
     <p class="lead mt-2">Platform terbaik untuk produk digital seperti e-book, template, asset, dan kelas online.</p>
-    <a href="#populer" class="btn btn-primary btn-lg">Jelajahi Sekarang</a>
+    <a href="#produk" class="btn btn-primary btn-lg">Jelajahi Sekarang</a>
 </div>
 
 <div class="container my-5" id="produk">

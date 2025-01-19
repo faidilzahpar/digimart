@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Http\Request;
 use App\Models\User;
 
@@ -132,6 +133,59 @@ class AuthController extends Controller
 
         return redirect()->route('profile')->with('success', 'Password berhasil diubah!');
     }
+
+    public function showForgotPasswordForm()
+    {
+        return view('auth.forgot-password');
+    }
+    public function sendResetLink(Request $request)
+    {
+        // Mengambil email pengguna yang sudah terdaftar
+        $email = Auth::user()->email;
+
+        $status = Password::sendResetLink(
+            ['email' => $email]
+        );
+
+        return $status == Password::RESET_LINK_SENT
+            ? back()->with('status', 'Link reset password telah dikirim!')
+            : back()->withErrors(['email' => 'Email tidak ditemukan.']);
+    }
+
+    public function showResetForm(Request $request, $token = null)
+    {
+        return view('auth.reset-password')->with(
+            ['token' => $token, 'email' => $request->email]
+        );
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|confirmed|min:8',
+        ]);
+    
+        $status = Password::reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function ($user) use ($request) {
+                $user->forceFill([
+                    'password' => Hash::make($request->password),
+                ])->save();
+    
+                // Mengirim email atau notif lainnya jika perlu
+            }
+        );
+    
+        if ($status == Password::PASSWORD_RESET) {
+            return redirect()->route('login')->with('status', 'Password berhasil diubah!');
+        } else {
+            return back()->withErrors(['email' => [trans($status)]]);
+        }
+    }
+
+
+
 
 
     // Logout pengguna

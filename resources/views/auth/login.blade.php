@@ -30,6 +30,9 @@
             <div class="mt-3 text-center">
                 <span>Belum punya akun? <a href="{{ route('register') }}" class="text-decoration-none">Daftar di sini</a></span>
             </div>
+            <div class="mt-3 text-center">
+                <a href="{{ route('password.request') }}" class="text-decoration-none">Lupa Password?</a>
+            </div>
         </form>
     </div>
 </div>

@@ -49,3 +49,12 @@ Route::get('/add-to-cart/{id}', [ProductController::class, 'addToCart'])->name('
 Route::get('/checkout', [ProductController::class, 'checkout'])->name('checkout');
 Route::post('/checkout/process', [ProductController::class, 'processCheckout'])->name('processCheckout');
 Route::delete('/cart/remove/{id}', [ProductController::class, 'removeFromCart'])->name('removeFromCart');
+
+// Route untuk forgot password
+Route::get('password/forgot', [AuthController::class, 'showForgotPasswordForm'])->name('password.request');
+Route::post('password/email', [AuthController::class, 'sendResetLink'])->name('password.email');
+
+// Route untuk reset password
+Route::get('password/reset/{token}', [AuthController::class, 'showResetForm'])->name('password.reset');
+Route::post('password/reset', [AuthController::class, 'resetPassword'])->name('password.update');
+
