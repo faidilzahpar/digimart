@@ -26,6 +26,7 @@ class AdminProductController extends Controller
             'deskripsi' => 'required|string',
             'harga' => 'required|numeric',
             'gambar' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Tambahkan batasan ukuran dan tipe file
+            'files' => 'nullable|array',
             'format_file' => 'nullable|array',
             'kategori' => 'required|string|max:255',
         ]);
@@ -34,12 +35,23 @@ class AdminProductController extends Controller
         $fileName = time() . '_' . $request->file('gambar')->getClientOriginalName();
         $filePath = $request->file('gambar')->move(public_path('assets'), $fileName);
 
+         // Menyimpan path file jika ada file yang diupload
+         $filePaths = [];
+         if ($request->hasFile('file')) {
+             foreach ($request->file('file') as $file) {
+                 $fileName = time() . '_' . $file->getClientOriginalName();
+                 $file->move(public_path('assets/files'), $fileName);
+                 $filePaths[] = 'assets/files/' . $fileName;
+             }
+         }
+
         // Buat produk baru
         Product::create([
             'nama_produk' => $request->nama_produk,
             'deskripsi' => $request->deskripsi,
             'harga' => $request->harga,
             'gambar' => 'assets/' . $fileName,
+            'file' => json_encode($filePaths),
             'format_file' => $request->format_file,
             'kategori' => $request->kategori,
         ]);
@@ -60,6 +72,7 @@ class AdminProductController extends Controller
             'deskripsi' => 'required|string',
             'harga' => 'required|numeric',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Gambar bersifat opsional saat update
+            'file' => 'nullable|array',
             'format_file' => 'nullable|array',
             'kategori' => 'required|string|max:255',
         ]);
@@ -68,6 +81,17 @@ class AdminProductController extends Controller
             $fileName = time() . '_' . $request->file('gambar')->getClientOriginalName();
             $filePath = $request->file('gambar')->move(public_path('assets'), $fileName);
             $product->gambar = 'assets/' . $fileName; // Update path gambar
+        }
+         // Menyimpan path file jika ada file yang diupload
+         if ($request->hasFile('file')) {
+            $filePaths = [];
+            foreach ($request->file('file') as $file) {
+                $fileName = time() . '_' . $file->getClientOriginalName();
+                $file->move(public_path('assets/files'), $fileName);
+                $filePaths[] = 'assets/files/' . $fileName;
+            }
+            // Update kolom file dengan data file terbaru
+            $product->file = json_encode($filePaths);
         }
 
         // Update informasi produk

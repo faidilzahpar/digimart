@@ -47,6 +47,16 @@
             </select>
         </div>
         <div class="mb-3">
+            <label for="file">File</label>
+            <input type="file" class="form-control" name="file[]" id="file" accept=".zip,.rar,.pdf,.doc,.docx" multiple>
+            @if($product->file)
+                <p>File yang diupload:</p>
+                @foreach(json_decode($product->file) as $file)
+                    <p>{{ basename($file) }}</p>
+                @endforeach
+            @endif
+        </div>
+        <div class="mb-3">
             <label for="format_file" class="form-label">Format File</label><br>
             @php
                 // Mengonversi format_file string menjadi array

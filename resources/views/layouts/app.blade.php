@@ -30,7 +30,6 @@
             width: 200px; /* Ubah lebar gambar watermark */
             height: 200px; /* Ubah tinggi gambar watermark */
             background-size: cover; /* Agar gambar menyesuaikan ukuran */
-            /* background-repeat: no-repeat; */
             background-image: url('{{ asset('digimartwm.png') }}'); /* Path gambar watermark */
             pointer-events: none; /* Agar gambar watermark tidak mengganggu interaksi */
         }

@@ -52,4 +52,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function purchased_products()
+    {
+        return $this->belongsToMany(Product::class, 'purchases', 'user_id', 'product_id');
+    }
 }

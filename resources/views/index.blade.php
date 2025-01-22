@@ -11,7 +11,6 @@
 </div>
 
 <div class="container my-5" id="produk">
-    {{-- <h2 class="text-center mb-4">Produk Digital Terpopuler</h2> --}}
     <div class="row g-4">
         @foreach ($products as $product)
             <div class="col-md-4">

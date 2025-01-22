@@ -45,41 +45,45 @@ class ProductController extends Controller
 
         // Kirim data ke view
         return view('kategori', [
-            'kategori' => ucfirst($kategori), // Ubah jadi huruf kapital untuk judul
+            'kategori' => ucwords($kategori), 
             'products' => $products,
         ]);
     }
 
 
     public function addToCart($id)
-{
-    $product = Product::find($id);
+    {
+        // Periksa apakah pengguna sudah login
+        if (!Auth::check()) {
+            return redirect()->route('login')->with('message', 'Silakan login untuk menambahkan produk ke keranjang.');
+        }
 
-    if (!$product) {
-        return redirect()->back()->with('error', 'Produk tidak ditemukan!');
-    }
+        // Cari produk berdasarkan ID
+        $product = Product::find($id);
 
-    // Ambil keranjang dari session atau buat array kosong jika belum ada
-    $cart = session()->get('cart', []);
+        if (!$product) {
+            return redirect()->back()->with('error', 'Produk tidak ditemukan!');
+        }
 
-    // Jika produk sudah ada di keranjang, tambahkan jumlahnya
-    if (isset($cart[$id])) {
-        $cart[$id]['quantity']++;
-    } else {
-        // Jika produk belum ada di keranjang, tambahkan dengan quantity 1
-        $cart[$id] = [
-            'nama_produk' => $product->nama_produk,
-            'harga' => $product->harga,
-            'gambar' => $product->gambar,
-            'quantity' => 1, // Tambahkan key quantity
-        ];
-    }
+        // Ambil keranjang dari session atau buat array kosong jika belum ada
+        $cart = session()->get('cart', []);
 
+        // Jika produk sudah ada di keranjang, tambahkan jumlahnya
+        if (isset($cart[$id])) {
+            $cart[$id]['quantity']++;
+        } else {
+            // Jika produk belum ada di keranjang, tambahkan dengan quantity 1
+            $cart[$id] = [
+                'nama_produk' => $product->nama_produk,
+                'harga' => $product->harga,
+                'gambar' => $product->gambar,
+                'quantity' => 1, // Tambahkan key quantity
+            ];
+        }
         // Simpan kembali keranjang ke session
         session()->put('cart', $cart);
-
-        session()->flash('success', 'Produk berhasil ditambahkan ke keranjang');
-
+        // Tambahkan pesan flash untuk sukses
+        session()->flash('success', 'Produk berhasil ditambahkan ke keranjang.');
         // Arahkan kembali ke halaman sebelumnya
         return redirect()->back();
     }
@@ -105,18 +109,26 @@ class ProductController extends Controller
         $cart = session('cart');
         $checkoutProducts = [];
 
-        // Ambil detail produk yang dipilih
+        // Simpan status pembelian produk yang dipilih
         foreach ($selectedProducts as $productId) {
             if (isset($cart[$productId])) {
                 $checkoutProducts[$productId] = $cart[$productId];
+
+                // Tandai produk sebagai sudah dibeli
+                session(['purchased_product_' . $productId => true]);
+                session(['purchase_date_' . $productId => now()->format('Y-m-d H:i:s')]);
             }
         }
 
-        // Simpan produk yang dipilih ke sesi checkout (opsional)
-        session()->put('checkout_products', $checkoutProducts);
+        // Hapus produk yang dibeli dari keranjang
+        foreach ($checkoutProducts as $productId => $product) {
+            unset($cart[$productId]);
+        }
 
-        // Arahkan ke halaman pembayaran atau lanjutkan proses
-        return redirect()->route('payment')->with('success', 'Produk berhasil dipilih untuk checkout!');
+        // Perbarui sesi keranjang
+        session(['cart' => $cart]);
+
+        return redirect()->route('history')->with('success', 'Pembayaran berhasil! Produk yang dibeli dapat dilihat di histori.');
     }
 
 
@@ -135,6 +147,56 @@ class ProductController extends Controller
         }
         
         return redirect()->back()->with('error', 'Produk tidak ditemukan dalam keranjang');
+    }
+
+    public function processPurchase($id)
+    {
+        // Pastikan pengguna sudah login
+        if (!Auth::check()) {
+            return redirect()->route('login')->with('message', 'Silakan login untuk membeli produk.');
+        }
+        $product = Product::findOrFail($id);
+        // Set status produk sebagai sudah dibeli dalam session
+        session(['purchased_product_' . $id => true]);
+        session(['purchase_date_' . $id => now()->format('Y-m-d H:i:s')]);
+        return redirect()->route('detail', $id)->with('success', 'Produk berhasil dibeli.');
+    }
+
+    public function downloadFiles($id, $filename)
+    {
+        $product = Product::findOrFail($id);
+        // Periksa jika pengguna sudah membeli produk (misalnya melalui session)
+        if (!session('purchased_product_' . $id)) {
+            return redirect()->route('detail', $id)->with('error', 'Anda harus membeli produk terlebih dahulu.');
+        }
+        // Cari file di folder assets/files
+        $filePath = public_path("assets/files/{$filename}");
+        // Periksa apakah file ada
+        if (!file_exists($filePath)) {
+            return redirect()->route('detail', $id)->with('error', 'File tidak ditemukan.');
+        }
+        session()->flash('success', 'Unduhan telah dimulai.');
+        // Kirimkan file untuk diunduh
+        return response()->download($filePath);
+    }
+
+    public function purchaseHistory()
+    {
+        $purchasedProductIds = array_map(function ($key) {
+            return str_replace('purchased_product_', '', $key);
+        }, array_filter(array_keys(session()->all()), function ($key) {
+            return str_starts_with($key, 'purchased_product_');
+        }));
+
+        $products = Product::whereIn('id', $purchasedProductIds)->get();
+
+        // Tambahkan tanggal pembelian untuk setiap produk
+        $productsWithDates = $products->map(function ($product) {
+            $product->purchase_date = session('purchase_date_' . $product->id);
+            return $product;
+        })->sortByDesc('purchase_date');
+
+        return view('history', ['products' => $productsWithDates]);
     }
 
 }

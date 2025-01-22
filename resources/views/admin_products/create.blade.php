@@ -44,6 +44,10 @@
             </select>
         </div>
         <div class="mb-3">
+            <label for="file">File</label>
+            <input type="file" class="form-control" name="file[]" id="file" multiple>
+        </div>
+        <div class="mb-3">
             <label for="format_file" class="form-label">Format File</label><br>
             <label class="form-check-label">
                 <input type="checkbox" name="format_file[]" value="png" class="form-check-input"> PNG

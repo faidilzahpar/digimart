@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('content')
-<div class="container mt-5">
+<div class="container mt-5" style="min-height: 68vh">
     <h1 class="text-center mb-4">{{ $kategori }}</h1>
     <div class="row g-4 my-4">
         @foreach ($products as $product)

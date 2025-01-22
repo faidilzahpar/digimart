@@ -18,12 +18,17 @@ class AuthController extends Controller
     }
 
     // Menangani proses login
+    // Menangani proses login
     public function login(Request $request)
     {
         $credentials = $request->only('username', 'password');
 
         if (Auth::attempt($credentials)) {
-            // Login berhasil
+            if (Auth::user()->role === 'admin') {
+                return redirect()->route('admin.index');
+            }
+
+            // Login berhasil sebagai user
             return redirect()->intended('/');
         } else {
             // Gagal login
@@ -31,12 +36,14 @@ class AuthController extends Controller
         }
     }
 
+
     // Menampilkan halaman register
     public function showRegister()
     {
         return view('auth.register');
     }
 
+    // Menangani proses register
     // Menangani proses register
     public function register(Request $request)
     {
@@ -46,15 +53,19 @@ class AuthController extends Controller
             'password' => 'required|confirmed|min:6',
         ]);
 
-        // Membuat user baru
+        // Membuat user baru dengan role 'user'
         User::create([
             'username' => $request->username,
             'email' => $request->email,
             'password' => bcrypt($request->password),
+            'role' => 'user', // Role default adalah 'user'
         ]);
 
         return redirect()->route('login')->with('success', 'Akun berhasil dibuat!');
     }
+
+
+    
 
 
     public function showProfile()

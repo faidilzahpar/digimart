@@ -15,7 +15,13 @@ class Product extends Model
         'harga',
         'gambar',
         'kategori',
+        'file',
         'format_file',
     ];
     public $timestamps = false; // Nonaktifkan timestamps
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'purchases');
+    }
 }

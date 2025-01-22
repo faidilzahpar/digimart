@@ -19,6 +19,8 @@ Route::get('/kategori/{kategori}', [ProductController::class, 'kategori'])->name
 
 Route::get('/search', [ProductController::class, 'search'])->name('search');
 
+Route::get('/history', [ProductController::class, 'purchaseHistory'])->name('history');
+
 Route::get('products/{id}', [ProductController::class, 'detail'])->name('detail');
 
 Route::prefix('admin')->group(function () {
@@ -39,9 +41,13 @@ Route::middleware('auth')->group(function () {
     Route::post('/profile/update', [AuthController::class, 'updateProfile'])->name('profile.update');
     Route::post('/profile/change-password', [AuthController::class, 'changePassword'])->name('profile.changePassword');
     Route::post('/profile/delete-image', [AuthController::class, 'deleteProfileImage'])->name('profile.deleteImage');
+    Route::post('/add-to-cart/{id}', [ProductController::class, 'addToCart'])->name('addToCart');
 });
 
-
+Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/', [AdminProductController::class, 'index'])->name('admin.index');
+    Route::resource('products', AdminProductController::class);
+});
 
 Route::prefix('admin')->middleware('auth')->group(function () {
     Route::get('/', [AdminProductController::class, 'index'])->name('admin.index');
@@ -52,6 +58,9 @@ Route::get('/add-to-cart/{id}', [ProductController::class, 'addToCart'])->name('
 Route::get('/checkout', [ProductController::class, 'checkout'])->name('checkout');
 Route::post('/checkout/process', [ProductController::class, 'processCheckout'])->name('processCheckout');
 Route::delete('/cart/remove/{id}', [ProductController::class, 'removeFromCart'])->name('removeFromCart');
+
+Route::post('/buy/{id}', [ProductController::class, 'processPurchase'])->name('processPurchase');
+Route::get('/download/{id}/{filename}', [ProductController::class, 'downloadFiles'])->name('downloadFiles');
 
 // Route untuk forgot password
 Route::get('password/forgot', [AuthController::class, 'showForgotPasswordForm'])->name('password.request');

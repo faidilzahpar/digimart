@@ -3,7 +3,7 @@
       <a class="navbar-brand" href="https://github.com/faidilzahpar/CRUD-laravel/blob/main/assets/LogofullDigiMart.png?raw=true" target="blank"> 
         <img src="https://github.com/faidilzahpar/CRUD-laravel/blob/main/assets/LogoDigiMart200px.png?raw=true" alt="Logo" width="40" height="40" class="d-inline-block align-text-top"> 
       </a>
-      <div class="col-md-6 col-lg-7 mx-auto">
+      <div class="col-md-5 col-lg-7 mx-auto">
         <form class="d-flex" role="search" method="GET" action="{{ route('search') }}">
             <input class="form-control me-2" type="search" name="query" placeholder="Cari disini" aria-label="Search" />
             <button class="btn btn-outline-primary" type="submit"><i class='bx bx-search'></i></button>
@@ -12,7 +12,7 @@
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <div class="collapse navbar-collapse ms-5" id="navbarSupportedContent">
+      <div class="collapse navbar-collapse ms-4" id="navbarSupportedContent">
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
           <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
           <li class="nav-item"><a class="nav-link" href="/#produk">Produk</a></li>
@@ -24,7 +24,8 @@
               <li><a class="dropdown-item" href="{{ route('kategori', 'Template desain') }}">Template desain</a></li>
               <li><a class="dropdown-item" href="{{ route('kategori', 'Asset desain') }}">Asset desain</a></li>
             </ul>
-          </li> 
+          </li>
+          <li class="nav-item"><a class="nav-link" href="{{ route('history') }}">Histori</a></li>
         </ul>
       </div>
       <div class="auth w-100 d-flex justify-content-end">
@@ -33,7 +34,7 @@
             <a href="{{ route('login') }}" class="btn btn-outline-primary mx-1">Masuk</a>
             <a href="{{ route('register') }}" class="btn btn-primary mx-1">Daftar</a>
         @else
-            <a href="{{ route('profile') }}" class="text-decoration-none text-dark fw-semibold mx-1">
+            <a href="{{ route('profile') }}" class="text-decoration-none text-dark fw-semibold">
               <img src="{{ asset(Auth::user()->image) }}" alt="Profile Image" class="profile-image img-fluid rounded-circle border border-white me-1" style="width: 40px; height: 40px; object-fit: cover; box-shadow: 0 0 0 3px #1e90ff;">
             </a>
         @endguest
