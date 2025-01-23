@@ -14,12 +14,13 @@
                 <img src="https://github.com/faidilzahpar/CRUD-laravel/blob/main/assets/LogoDigiMart200px.png?raw=true" alt="Logo" width="40" height="40" class="d-inline-block align-text-top"> 
             </a>
             <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <form action="{{ route('logout') }}" method="POST">
-                        @csrf
-                        <button type="submit" class="btn btn-danger w-100">Keluar</button>
-                    </form>
-                </li>
+              <li class="nav-item"><a class="nav-link" href="/">User</a></li>
+              <li class="nav-item">
+                <form action="{{ route('logout') }}" method="POST">
+                  @csrf
+                  <button type="submit" class="btn btn-danger w-100">Keluar</button>
+                </form>
+              </li>
             </ul>
         </div>
     </nav>

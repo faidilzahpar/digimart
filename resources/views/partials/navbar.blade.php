@@ -26,6 +26,9 @@
             </ul>
           </li>
           <li class="nav-item"><a class="nav-link" href="{{ route('history') }}">Histori</a></li>
+          @if(Auth::check() && Auth::user()->role === 'admin')
+            <li class="nav-item"><a class="nav-link" href="{{ route('admin.index') }}">Admin</a></li>
+          @endif
         </ul>
       </div>
       <div class="auth w-100 d-flex justify-content-end">
@@ -35,7 +38,7 @@
             <a href="{{ route('register') }}" class="btn btn-primary mx-1">Daftar</a>
         @else
             <a href="{{ route('profile') }}" class="text-decoration-none text-dark fw-semibold">
-              <img src="{{ asset(Auth::user()->image) }}" alt="Profile Image" class="profile-image img-fluid rounded-circle border border-white me-1" style="width: 40px; height: 40px; object-fit: cover; box-shadow: 0 0 0 3px #1e90ff;">
+              <img src="{{ asset(Auth::user()->image) }}" alt="Profile Image" class="profile-image img-fluid rounded-circle border border-white me-1" style="width: 40px; height: 40px; object-fit: cover; box-shadow: 0 0 0 3px #0d6efd;">
             </a>
         @endguest
     </div>
@@ -49,9 +52,6 @@
   <div class="dropdown position-fixed z-3">
     <button class="btn btn-primary dropdown-toggle rounded-pill position-fixed bottom-0 end-0 m-4 fs-3 lh-lg shadow-sm" type="button" id="cartDropdown" data-bs-toggle="dropdown" aria-expanded="false">
         <i class='bx bxs-cart-alt'></i>
-        {{-- @if (session('cart'))
-            <span class="badge border border-light border-3 bg-primary text-light fs-6">{{ count(session('cart')) }}</span>
-        @endif --}}
     </button>
     <ul class="dropdown-menu" aria-labelledby="cartDropdown" style="min-width: 300px;">
         @if (session('cart') && count(session('cart')) > 0)

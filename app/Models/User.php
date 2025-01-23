@@ -23,6 +23,7 @@ class User extends Authenticatable
         'email',
         'password',
         'image',
+        'role',
     ];
 
     public function getImageAttribute($value)

@@ -44,11 +44,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/add-to-cart/{id}', [ProductController::class, 'addToCart'])->name('addToCart');
 });
 
-Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/', [AdminProductController::class, 'index'])->name('admin.index');
-    Route::resource('products', AdminProductController::class);
-});
-
 Route::prefix('admin')->middleware('auth')->group(function () {
     Route::get('/', [AdminProductController::class, 'index'])->name('admin.index');
     Route::resource('products', AdminProductController::class);

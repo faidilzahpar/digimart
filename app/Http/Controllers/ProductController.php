@@ -98,6 +98,7 @@ class ProductController extends Controller
         // Kirimkan data keranjang ke view checkout
         return view('checkout');
     }
+    
     public function processCheckout(Request $request)
     {
         $selectedProducts = $request->input('selected_products');
@@ -156,9 +157,15 @@ class ProductController extends Controller
             return redirect()->route('login')->with('message', 'Silakan login untuk membeli produk.');
         }
         $product = Product::findOrFail($id);
-        // Set status produk sebagai sudah dibeli dalam session
+        // Tandai produk sebagai sudah dibeli
         session(['purchased_product_' . $id => true]);
         session(['purchase_date_' . $id => now()->format('Y-m-d H:i:s')]);
+        // Hapus produk dari keranjang jika ada
+        $cart = session('cart', []);
+        if (isset($cart[$id])) {
+            unset($cart[$id]);
+            session(['cart' => $cart]); // Perbarui sesi keranjang
+        }
         return redirect()->route('detail', $id)->with('success', 'Produk berhasil dibeli.');
     }
 
@@ -182,6 +189,13 @@ class ProductController extends Controller
 
     public function purchaseHistory()
     {
+        // Periksa apakah pengguna sudah login
+        if (!Auth::check()) {
+            // Kosongkan keranjang jika pengguna belum login
+            session()->forget('cart');
+            return redirect()->route('login')->with('message', 'Silakan login untuk melihat histori pembelian.');
+        }
+
         $purchasedProductIds = array_map(function ($key) {
             return str_replace('purchased_product_', '', $key);
         }, array_filter(array_keys(session()->all()), function ($key) {

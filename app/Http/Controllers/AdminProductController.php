@@ -4,9 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AdminProductController extends Controller
 {
+    public function __construct() {
+        $user = Auth::user();
+        
+        if($user->role=='user'){
+            abort(404);
+        }
+    }
+
     public function index()
     {
         $products = Product::all();
