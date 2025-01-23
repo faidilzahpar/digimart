@@ -3,7 +3,7 @@
       <a class="navbar-brand" href="https://github.com/faidilzahpar/CRUD-laravel/blob/main/assets/LogofullDigiMart.png?raw=true" target="blank"> 
         <img src="https://github.com/faidilzahpar/CRUD-laravel/blob/main/assets/LogoDigiMart200px.png?raw=true" alt="Logo" width="40" height="40" class="d-inline-block align-text-top"> 
       </a>
-      <div class="col-md-5 col-lg-7 mx-auto">
+      <div class="col-md-4 col-lg-6 mx-auto">
         <form class="d-flex" role="search" method="GET" action="{{ route('search') }}">
             <input class="form-control me-2" type="search" name="query" placeholder="Cari disini" aria-label="Search" />
             <button class="btn btn-outline-primary" type="submit"><i class='bx bx-search'></i></button>
@@ -29,6 +29,8 @@
           <li class="nav-item"><a class="nav-link {{ (request()->is('history')) ? 'active' : '' }}" href="{{ route('history') }}">Histori</a></li>
           @if(Auth::check() && Auth::user()->role === 'admin')
             <li class="nav-item"><a class="nav-link" href="{{ route('admin.index') }}">Admin</a></li>
+          @else
+            <li class="nav-item"><a class="nav-link" href="#kontak">Kontak</a></li>
           @endif
         </ul>
       </div>
