@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-md-6">
             <!-- Gambar Produk -->
-            <div class="img-container @if($product->kategori === 'Asset desain') watermark @endif" style="max-height: 700px; overflow: hidden;">
+            <div class="img-container shadow rounded border @if($product->kategori === 'Asset desain') watermark @endif" style="max-height: 700px; overflow: hidden;">
                 <img src="{{ asset($product->gambar) }}" class="card-img-top" alt="{{ $product->nama_produk }}" style="width: 100%; height: 100%; object-fit: cover;" />
             </div>
         </div>
@@ -27,7 +27,7 @@
                     @endforeach
                 @else
                 <!-- Tombol Beli dan Keranjang jika produk belum dibeli -->
-                <form action="{{ route('processPurchase', $product->id) }}" method="POST">
+                <form action="{{ route('processPurchase', $product->id) }}" method="POST" onsubmit="return confirmPurchase();">
                     @csrf
                     <button type="submit" class="btn btn-outline-primary">Beli</button>
                 </form>

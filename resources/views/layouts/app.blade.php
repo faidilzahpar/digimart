@@ -95,6 +95,21 @@
             // Inisialisasi total harga
             updateTotalHarga();
         });
+
+        // Menggunakan variabel ini untuk menentukan apakah pengguna sudah login
+
+    var isLoggedIn = @json(Auth::check());
+
+
+    function confirmPurchase() {
+        if (!isLoggedIn) {
+            // Jika pengguna belum login, arahkan ke halaman login
+            window.location.href = "{{ route('login') }}";
+            return false; // Mencegah form disubmit
+        }
+        // Jika sudah login, tampilkan dialog konfirmasi
+        return confirm("Apakah Anda yakin ingin membeli produk ini?");
+    }
     </script>
 </body>
 </html>

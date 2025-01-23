@@ -5,7 +5,7 @@
         <h1 class="text-center">Checkout</h1>
 
         @if(session('cart') && count(session('cart')) > 0)
-            <form id="checkoutForm" action="{{ route('processCheckout') }}" method="POST">
+            <form id="checkoutForm" action="{{ route('processCheckout') }}" method="POST" onsubmit="return confirmPurchase();">
                 @csrf
                 <div class="cart-items">
                     <div class="mb-3">
@@ -38,7 +38,7 @@
                 <hr>
                 <div class="text-center">
                     <p><strong>Total Harga: <span id="totalHarga">{{ number_format($totalHarga, 2, ',', '.') }}</span></strong></p>
-                    <button type="submit" class="btn btn-primary">Lanjutkan Pembayaran</button>
+                    <button type="submit" class="btn btn-primary" onsubmit="return confirmPurchase();">Lanjutkan Pembayaran</button>
                 </div>
             </form>
         @else

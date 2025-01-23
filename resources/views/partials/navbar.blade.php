@@ -14,18 +14,19 @@
       </button>
       <div class="collapse navbar-collapse ms-4" id="navbarSupportedContent">
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-          <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+          <li class="nav-item"><a class="nav-link {{ (request()->is('/')) ? 'active' : '' }}" href="/">Home</a></li>
           <li class="nav-item"><a class="nav-link" href="/#produk">Produk</a></li>
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Kategori</a>
+            <a class="class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle {{ (request()->is('kategori/*')) ? 'active' : '' }} dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Kategori</a>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="{{ route('kategori', 'E-book') }}">E-book</a></li>
-              <li><a class="dropdown-item" href="{{ route('kategori', 'Kelas online') }}">Kelas online</a></li>
-              <li><a class="dropdown-item" href="{{ route('kategori', 'Template desain') }}">Template desain</a></li>
-              <li><a class="dropdown-item" href="{{ route('kategori', 'Asset desain') }}">Asset desain</a></li>
+              <li><a class="dropdown-item {{ (request()->is('kategori/E-book')) ? 'active' : '' }}" href="{{ route('kategori', 'E-book') }}">E-book</a></li>
+              <li><a class="dropdown-item {{ (request()->is('kategori/Kelas online')) ? 'active' : '' }}" href="{{ route('kategori', 'Kelas online') }}">Kelas online</a></li>
+              <li><a class="dropdown-item {{ (request()->is('kategori/Template desain')) ? 'active' : '' }}" href="{{ route('kategori', 'Template desain') }}">Template desain</a></li>
+              <li><a class="dropdown-item {{ (request()->is('kategori/Asset desain')) ? 'active' : '' }}" href="{{ route('kategori', 'Asset desain') }}">Asset desain</a></li>
             </ul>
           </li>
-          <li class="nav-item"><a class="nav-link" href="{{ route('history') }}">Histori</a></li>
+          <li class="nav-item"><a class="nav-link {{ (request()->is('history')) ? 'active' : '' }}" href="{{ route('history') }}">Histori</a></li>
           @if(Auth::check() && Auth::user()->role === 'admin')
             <li class="nav-item"><a class="nav-link" href="{{ route('admin.index') }}">Admin</a></li>
           @endif

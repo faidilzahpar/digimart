@@ -210,7 +210,13 @@ class ProductController extends Controller
             return $product;
         })->sortByDesc('purchase_date');
 
-        return view('history', ['products' => $productsWithDates]);
+        // Cek apakah produk kosong
+        $hasProducts = $productsWithDates->isNotEmpty();
+
+        return view('history', [
+            'products' => $productsWithDates,
+            'hasProducts' => $hasProducts,
+        ]);
     }
 
 }

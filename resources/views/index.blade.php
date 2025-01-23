@@ -14,7 +14,7 @@
     <div class="row g-4">
         @foreach ($products as $product)
             <div class="col-md-4">
-                <div class="card" style="height: 480px;">
+                <div class="card shadow" style="height: 480px;">
                     <div class="img-container @if($product->kategori === 'Asset desain') watermark @endif" style="height: 280px; overflow: hidden;">
                         <img src="{{ asset($product->gambar) }}" class="card-img-top" alt="{{ $product->nama_produk }}" style="width: 100%; height: 100%; object-fit: cover;" />
                     </div>
