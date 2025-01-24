@@ -40,28 +40,28 @@ class AdminProductController extends Controller
             'kategori' => 'required|string|max:255',
         ]);
 
-        // Simpan gambar ke folder public/assets dengan nama asli
-        $fileName = time() . '_' . $request->file('gambar')->getClientOriginalName();
-        $filePath = $request->file('gambar')->move(public_path('assets'), $fileName);
+        // Proses upload gambar
+        $gambarName = time() . '_' . $request->file('gambar')->getClientOriginalName();
+        $gambarPath = $request->file('gambar')->move(public_path('assets'), $gambarName);
 
-         // Menyimpan path file jika ada file yang diupload
-         $filePaths = [];
-         if ($request->hasFile('file')) {
-             foreach ($request->file('file') as $file) {
-                 $fileName = time() . '_' . $file->getClientOriginalName();
-                 $file->move(public_path('assets/files'), $fileName);
-                 $filePaths[] = 'assets/files/' . $fileName;
-             }
-         }
+        // Proses upload file
+        $filePaths = [];
+        if ($request->hasFile('file')) {
+            foreach ($request->file('file') as $file) {
+                $fileName = time() . '_' . $file->getClientOriginalName();
+                $file->move(public_path('assets/files'), $fileName);
+                $filePaths[] = 'assets/files/' . $fileName;
+            }
+        }
 
-        // Buat produk baru
+        // Simpan data ke database
         Product::create([
             'nama_produk' => $request->nama_produk,
             'deskripsi' => $request->deskripsi,
             'harga' => $request->harga,
-            'gambar' => 'assets/' . $fileName,
-            'file' => json_encode($filePaths),
-            'format_file' => $request->format_file,
+            'gambar' => 'assets/' . $gambarName, // Path gambar
+            'file' => json_encode($filePaths), // Ubah array file ke JSON
+            'format_file' => json_encode($request->format_file), // Ubah array format_file ke JSON
             'kategori' => $request->kategori,
         ]);
 

@@ -48,7 +48,7 @@
         </div>
         <div class="mb-3">
             <label for="file">File</label>
-            <input type="file" class="form-control" name="file[]" id="file" accept=".zip,.rar,.pdf,.doc,.docx" multiple>
+            <input type="file" class="form-control" name="file[]" id="file" multiple>
             @if($product->file)
                 <p>File yang diupload:</p>
                 @foreach(json_decode($product->file) as $file)
