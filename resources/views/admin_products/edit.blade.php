@@ -47,6 +47,10 @@
             </select>
         </div>
         <div class="mb-3">
+            <label for="jenis" class="form-label">Jenis</label>
+            <input type="text" class="form-control" id="jenis" name="jenis" value="{{ $product->jenis }}" required>
+        </div>
+        <div class="mb-3">
             <label for="file">File</label>
             <input type="file" class="form-control" name="file[]" id="file" multiple>
             @if($product->file)

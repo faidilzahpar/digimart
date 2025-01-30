@@ -17,6 +17,7 @@ class Product extends Model
         'kategori',
         'file',
         'format_file',
+        'jenis',
     ];
     public $timestamps = false; // Nonaktifkan timestamps
 

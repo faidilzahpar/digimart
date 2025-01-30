@@ -38,6 +38,7 @@ class AdminProductController extends Controller
             'files' => 'nullable|array',
             'format_file' => 'nullable|array',
             'kategori' => 'required|string|max:255',
+            'jenis' => 'required|string|max:255',
         ]);
 
         // Proses upload gambar
@@ -63,6 +64,7 @@ class AdminProductController extends Controller
             'file' => json_encode($filePaths), // Ubah array file ke JSON
             'format_file' => json_encode($request->format_file), // Ubah array format_file ke JSON
             'kategori' => $request->kategori,
+            'jenis' => $request->jenis,
         ]);
 
         return redirect()->route('products.index')->with('success', 'Produk berhasil ditambahkan.');
@@ -83,7 +85,7 @@ class AdminProductController extends Controller
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Gambar bersifat opsional saat update
             'file' => 'nullable|array',
             'format_file' => 'nullable|array',
-            'kategori' => 'required|string|max:255',
+            'jenis' => 'required|string|max:255',
         ]);
 
         if ($request->hasFile('gambar')) {
@@ -109,6 +111,7 @@ class AdminProductController extends Controller
         $product->harga = $request->harga;
         $product->format_file = $request->format_file;
         $product->kategori = $request->kategori;
+        $product->jenis = $request->jenis;
         $product->save();
 
         return redirect()->route('products.index')->with('success', 'Produk berhasil diperbarui.');

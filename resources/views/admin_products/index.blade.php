@@ -17,6 +17,7 @@
                 <th>Deskripsi</th>
                 <th>Harga</th>
                 <th>Kategori</th>
+                <th>Jenis</th>
                 <th>File</th>
                 <th>Format File</th>
                 <th>Gambar</th>
@@ -30,6 +31,7 @@
                     <td>{{ $product->deskripsi }}</td>
                     <td>Rp. {{ number_format($product->harga, 0, ',', '.') }}</td>
                     <td>{{ $product->kategori }}</td>
+                    <td>{{ $product->jenis }}</td>
                     <td>
                         @if($product->file)
                             @foreach(json_decode($product->file) as $file)
