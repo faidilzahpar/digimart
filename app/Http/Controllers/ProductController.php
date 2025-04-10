@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product; // pastikan model Product sudah dibuat
+use App\Models\Purchase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -28,8 +29,21 @@ class ProductController extends Controller
 
     public function detail($id)
     {
-        $product = Product::findOrFail($id); // Mencari produk berdasarkan ID
-        return view('detail', compact('product')); // Mengirim data produk ke view
+        $product = Product::findOrFail($id); // Ambil produk
+    
+        $isPurchased = false;
+    
+        // Cek apakah user login dan sudah beli produk
+        if (Auth::check()) {
+            $isPurchased = Purchase::where('user_id', Auth::id())
+                ->where('product_id', $product->id)
+                ->exists();
+        }
+    
+        // Tambahkan properti is_purchased ke objek produk
+        $product->is_purchased = $isPurchased;
+    
+        return view('detail', compact('product'));
     }
 
     // Kategori
@@ -102,33 +116,29 @@ class ProductController extends Controller
     public function processCheckout(Request $request)
     {
         $selectedProducts = $request->input('selected_products');
-
+    
         if (!$selectedProducts) {
             return redirect()->route('checkout')->with('error', 'Tidak ada produk yang dipilih!');
         }
-
+    
         $cart = session('cart');
-        $checkoutProducts = [];
-
-        // Simpan status pembelian produk yang dipilih
+    
         foreach ($selectedProducts as $productId) {
             if (isset($cart[$productId])) {
-                $checkoutProducts[$productId] = $cart[$productId];
-
-                // Tandai produk sebagai sudah dibeli
-                session(['purchased_product_' . $productId => true]);
-                session(['purchase_date_' . $productId => now()->format('Y-m-d H:i:s')]);
+                // Simpan ke tabel purchases
+                Purchase::create([
+                    'user_id' => Auth::id(),
+                    'product_id' => $productId,
+                    'purchased_at' => now(),
+                ]);
+    
+                // Hapus dari cart setelah pembelian
+                unset($cart[$productId]);
             }
         }
-
-        // Hapus produk yang dibeli dari keranjang
-        foreach ($checkoutProducts as $productId => $product) {
-            unset($cart[$productId]);
-        }
-
-        // Perbarui sesi keranjang
+    
         session(['cart' => $cart]);
-
+    
         return redirect()->route('history')->with('success', 'Pembayaran berhasil! Produk yang dibeli dapat dilihat di histori.');
     }
 
@@ -152,20 +162,26 @@ class ProductController extends Controller
 
     public function processPurchase($id)
     {
-        // Pastikan pengguna sudah login
         if (!Auth::check()) {
             return redirect()->route('login')->with('message', 'Silakan login untuk membeli produk.');
         }
+    
         $product = Product::findOrFail($id);
-        // Tandai produk sebagai sudah dibeli
-        session(['purchased_product_' . $id => true]);
-        session(['purchase_date_' . $id => now()->format('Y-m-d H:i:s')]);
-        // Hapus produk dari keranjang jika ada
+    
+        // Simpan ke database sebagai pembelian
+        Purchase::create([
+            'user_id' => Auth::id(),
+            'product_id' => $product->id,
+            'purchased_at' => now(),
+        ]);
+    
+        // Hapus dari keranjang (kalau ada)
         $cart = session('cart', []);
         if (isset($cart[$id])) {
             unset($cart[$id]);
-            session(['cart' => $cart]); // Perbarui sesi keranjang
+            session(['cart' => $cart]);
         }
+    
         return redirect()->route('detail', $id)->with('success', 'Produk berhasil dibeli.');
     }
 
@@ -191,28 +207,25 @@ class ProductController extends Controller
     {
         // Periksa apakah pengguna sudah login
         if (!Auth::check()) {
-            // Kosongkan keranjang jika pengguna belum login
             session()->forget('cart');
             return redirect()->route('login')->with('message', 'Silakan login untuk melihat histori pembelian.');
         }
-
-        $purchasedProductIds = array_map(function ($key) {
-            return str_replace('purchased_product_', '', $key);
-        }, array_filter(array_keys(session()->all()), function ($key) {
-            return str_starts_with($key, 'purchased_product_');
-        }));
-
-        $products = Product::whereIn('id', $purchasedProductIds)->get();
-
-        // Tambahkan tanggal pembelian untuk setiap produk
-        $productsWithDates = $products->map(function ($product) {
-            $product->purchase_date = session('purchase_date_' . $product->id);
+    
+        // Ambil histori pembelian dari database berdasarkan user login
+        $purchases = Purchase::with('product')
+            ->where('user_id', Auth::id())
+            ->orderByDesc('purchased_at')
+            ->get();
+    
+        // Siapkan data produk beserta tanggal beli
+        $productsWithDates = $purchases->map(function ($purchase) {
+            $product = $purchase->product;
+            $product->purchase_date = $purchase->purchased_at;
             return $product;
-        })->sortByDesc('purchase_date');
-
-        // Cek apakah produk kosong
+        });
+    
         $hasProducts = $productsWithDates->isNotEmpty();
-
+    
         return view('history', [
             'products' => $productsWithDates,
             'hasProducts' => $hasProducts,

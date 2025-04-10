@@ -16,16 +16,16 @@
             <strong>Format File:</strong> {{ implode(', ', json_decode($product->format_file)) }} <br>
             {{ $product->deskripsi }}
         
-            <!-- Tombol Beli & Keranjang -->
-            <div class="mt-3 d-flex gap-1">
-                @if(session('purchased_product_' . $product->id))
-                    <!-- Tombol Download jika produk sudah dibeli -->
-                    @foreach (json_decode($product->file) as $file)
-                        <a href="{{ route('downloadFiles', ['id' => $product->id, 'filename' => basename($file)]) }}" class="btn btn-primary">
-                            Download
-                        </a>
-                    @endforeach
-                @else
+        <!-- Tombol Beli & Keranjang -->
+        <div class="mt-3 d-flex gap-1">
+            @if($product->is_purchased)
+                <!-- Tombol Download jika produk sudah dibeli -->
+                @foreach (json_decode($product->file) as $file)
+                    <a href="{{ route('downloadFiles', ['id' => $product->id, 'filename' => basename($file)]) }}" class="btn btn-primary">
+                        Download
+                    </a>
+                @endforeach
+            @else
                 <!-- Tombol Beli dan Keranjang jika produk belum dibeli -->
                 <form action="{{ route('processPurchase', $product->id) }}" method="POST" onsubmit="return confirmPurchase();">
                     @csrf
@@ -35,8 +35,8 @@
                     @csrf
                     <button type="submit" class="btn btn-primary">+Keranjang</button>
                 </form>
-                @endif
-            </div>            
+            @endif
+        </div>  
         </div>
     </div>
 </div>
